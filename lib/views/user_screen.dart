@@ -1,4 +1,3 @@
-
 import 'package:daniyal_designers_todo/services/firebase_crud.dart';
 import 'package:daniyal_designers_todo/views/update_todo_screen.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +29,7 @@ class _UserScreenState extends State<UserScreen> {
           future: FirebaseCRUD().getUser(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
+              return Text('Error: ${snapshot.error}');
             }
             if (snapshot.hasData) {
               return ListView.builder(
@@ -41,41 +40,17 @@ class _UserScreenState extends State<UserScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15, top: 15),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Text("Name: ${snapshot.data![index].name}"),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                  "PhoneNumber: ${snapshot.data![index].phoneNum}"),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text("waist: ${snapshot.data![index].waist}"),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text("Height: ${snapshot.data![index].height}"),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                  "CollarNumber: ${snapshot.data![index].collarNumber}"),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "Delivery Date: ${snapshot.data![index].selectedDate.toString()}",
-                              ),
-                            ],
-                          ),
+                          Text("Name: ${snapshot.data![index].name}"),
+                          Text(
+                              "PhoneNumber: ${snapshot.data![index].phoneNumber}"),
+                          Text("waist: ${snapshot.data![index].waist}"),
+                          Text("Height: ${snapshot.data![index].height}"),
+                          Text(
+                              "CollarNumber: ${snapshot.data![index].collarNumber}"),
+                          Text(
+                              "Delivery Date: ${snapshot.data![index].deliveryDate}"),
                           Row(
                             children: [
                               TextButton(
@@ -96,9 +71,9 @@ class _UserScreenState extends State<UserScreen> {
                                         waist: snapshot.data![index].waist,
                                         height: snapshot.data![index].height,
                                         phoneNum:
-                                            snapshot.data![index].phoneNum,
+                                            snapshot.data![index].phoneNumber,
                                         selectedDate:
-                                            snapshot.data![index].selectedDate,
+                                            snapshot.data![index].deliveryDate,
                                       ),
                                     ),
                                   );

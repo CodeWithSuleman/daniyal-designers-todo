@@ -1,4 +1,3 @@
-
 import 'package:daniyal_designers_todo/models/todo_model.dart';
 import 'package:daniyal_designers_todo/services/firebase_crud.dart';
 import 'package:daniyal_designers_todo/views/user_screen.dart';
@@ -11,15 +10,16 @@ class UpdateTodoScreen extends StatefulWidget {
   final int waist;
   final int height;
   final int phoneNum;
-  final DateTime selectedDate;
-  const UpdateTodoScreen(
-      {super.key,
-      required this.id,
-      required this.name,
-      required this.waist,
-      required this.height,
-      required this.phoneNum,
-     required this.selectedDate});
+  final String selectedDate;
+  const UpdateTodoScreen({
+    super.key,
+    required this.id,
+    required this.name,
+    required this.waist,
+    required this.height,
+    required this.phoneNum,
+    required this.selectedDate,
+  });
 
   @override
   State<UpdateTodoScreen> createState() => _UpdateTodoState();
@@ -28,12 +28,12 @@ class UpdateTodoScreen extends StatefulWidget {
 class _UpdateTodoState extends State<UpdateTodoScreen> {
   List<String> collarNum = ['One', 'Two', 'Three', 'Four'];
   String _currentState = 'One';
-   DateTime? selectedDate;
- 
-  TextEditingController heightController = TextEditingController();
-  TextEditingController waistController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController phoneNumController = TextEditingController();
+  DateTime? selectedDate;
+
+  final TextEditingController heightController = TextEditingController();
+  final TextEditingController waistController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneNumController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -46,17 +46,16 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
   @override
   Widget build(BuildContext context) {
     DateTime date = DateTime.now();
-    final double deviceHight = MediaQuery.of(context).size.height;
+    final double deviceHeight = MediaQuery.of(context).size.height;
     final double deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
           child: Column(
             children: [
-              SizedBox(height: deviceHight * 0.09),
+              SizedBox(height: deviceHeight * 0.09),
               Row(
                 children: [
                   const Text(
@@ -69,11 +68,11 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: deviceHight * 0.02),
+              SizedBox(height: deviceHeight * 0.02),
               Form(
                 child: Column(
                   children: [
-                     Row(
+                    Row(
                       children: [
                         const Text("Your Height:"),
                         SizedBox(width: deviceWidth * 0.07),
@@ -107,14 +106,14 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: deviceHight * 0.02),
+                    SizedBox(height: deviceHeight * 0.02),
                     Row(
                       children: [
                         const Text("Your Collar Number:"),
                         SizedBox(width: deviceWidth * 0.1),
                         SizedBox(
                           width: deviceWidth * 0.3,
-                          height: deviceHight * 0.08,
+                          height: deviceHeight * 0.08,
                           child: DropdownButton<String>(
                             items: collarNum.map((String dropDownStringItem) {
                               return DropdownMenuItem<String>(
@@ -122,16 +121,14 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
                                   child: Text(dropDownStringItem));
                             }).toList(),
                             onChanged: (String? newValueSelected) {
-                             
-                                _currentState = newValueSelected ?? "";
-                       
+                              _currentState = newValueSelected ?? "";
                             },
                             value: _currentState,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: deviceHight * 0.05),
+                    SizedBox(height: deviceHeight * 0.05),
                     TextFormField(
                       controller: nameController,
                       decoration: InputDecoration(
@@ -140,7 +137,7 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
                             borderRadius: BorderRadius.circular(10),
                           )),
                     ),
-                    SizedBox(height: deviceHight * 0.02),
+                    SizedBox(height: deviceHeight * 0.02),
                     TextFormField(
                       controller: phoneNumController,
                       maxLength: 11,
@@ -156,13 +153,14 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
                       children: [
                         const Text("Delivery Date:"),
                         TextButton(
-                          onPressed: ()async{
+                          onPressed: () async {
                             final DateTime? datePicked = await showDatePicker(
                                 context: context,
                                 initialDate: DateTime.now(),
                                 firstDate: DateTime(2022),
                                 lastDate: DateTime(2101));
-                            if (datePicked != null&&datePicked!=selectedDate) {
+                            if (datePicked != null &&
+                                datePicked != selectedDate) {
                               setState(() {
                                 selectedDate = datePicked;
                               });
@@ -171,9 +169,10 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
                           child: const Text("Enter a date"),
                         ),
                         Text(
-                            selectedDate != null
-          ? DateFormat('dd-MM-yyyy').format(selectedDate!)
-          : 'No date selected',),
+                          selectedDate != null
+                              ? DateFormat('dd-MM-yyyy').format(selectedDate!)
+                              : 'No date selected',
+                        ),
                       ],
                     )
                   ],
@@ -183,9 +182,9 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
                 onPressed: () {
                   FirebaseCRUD().updateUser(
                     User(
-                        selectedDate:DateTime.parse(DateFormat('dd-MMMM-yyyy').format(selectedDate!)),
-                        phoneNum: int.tryParse(phoneNumController.text) ?? 0,
-                       
+                        deliveryDate:
+                            DateFormat('dd-MMMM-yyyy').format(selectedDate!),
+                        phoneNumber: int.tryParse(phoneNumController.text) ?? 0,
                         name: nameController.text,
                         collarNumber: _currentState,
                         waist: int.tryParse(waistController.text) ?? 0,

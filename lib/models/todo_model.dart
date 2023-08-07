@@ -6,37 +6,36 @@ class User {
   final String collarNumber;
   final int waist;
   final int height;
-  final int phoneNum;
-  final DateTime selectedDate;
+  final int phoneNumber;
+  final String deliveryDate;
 
-  User(
-      {
-        this.id,
-    required this.selectedDate,
-    required this.phoneNum,
+  User({
+    this.id,
+    required this.deliveryDate,
+    required this.phoneNumber,
     required this.name,
     required this.collarNumber,
     required this.waist,
-    required this.height, 
+    required this.height,
   });
 
   Map<String, dynamic> toJson() => {
         'name': name,
-        'collarNumber': collarNumber,
+        'collar_number': collarNumber,
         'id': const Uuid().v4(),
         'waist': waist,
         'height': height,
-        'phoneNum': phoneNum,
-        'selectedDate':selectedDate,
+        'phone_number': phoneNumber,
+        'delivery_date': deliveryDate,
       };
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      selectedDate: json["selectedDate"],
-      id: json["id"], 
-      phoneNum: json["phoneNum"],
+      deliveryDate: json["delivery_date"],
+      id: json["id"],
+      phoneNumber: json["phone_number"],
       name: json["name"],
-      collarNumber: json["collarNumber"],
+      collarNumber: json["collar_number"],
       waist: json["waist"],
       height: json["height"],
     );

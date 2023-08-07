@@ -16,14 +16,14 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
   final List<String> collarNum = ['One', 'Two', 'Three', 'Four'];
   String _currentState = 'One';
   DateTime? selectedDate;
+  final TextEditingController heightController = TextEditingController();
+  final TextEditingController waistController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneNumController = TextEditingController();
+  final DateTime date = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController heightController = TextEditingController();
-    TextEditingController waistController = TextEditingController();
-    TextEditingController nameController = TextEditingController();
-    TextEditingController phoneNumController = TextEditingController();
-    final DateTime date = DateTime.now();
     final double deviceHeight = MediaQuery.of(context).size.height;
     final double deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -66,12 +66,12 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
+                            constraints:
+                                BoxConstraints(maxWidth: deviceWidth * 0.3),
                             border: const OutlineInputBorder(),
                             isDense: true,
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 10),
-                            constraints:
-                                BoxConstraints(maxWidth: deviceWidth * 0.3),
                             hintText: "Enter Height",
                             hintStyle: const TextStyle(fontSize: 12),
                           ),
@@ -169,9 +169,9 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                 onPressed: () {
                   FirebaseCRUD().createUser(
                     User(
-                        selectedDate: DateTime.parse(DateFormat('dd-MM-yy')
-                            .format(selectedDate ?? DateTime.now())),
-                        phoneNum: int.tryParse(phoneNumController.text) ?? 0,
+                        deliveryDate:
+                            DateFormat('dd-MMMM-yyyy').format(selectedDate!),
+                        phoneNumber: int.tryParse(phoneNumController.text) ?? 0,
                         name: nameController.text,
                         collarNumber: _currentState,
                         waist: int.tryParse(waistController.text) ?? 0,
