@@ -1,9 +1,11 @@
 import 'package:daniyal_designers_todo/models/todo_model.dart';
 import 'package:daniyal_designers_todo/services/firebase_crud.dart';
-import 'package:daniyal_designers_todo/views/user_screen.dart';
+import 'package:daniyal_designers_todo/utils/validataion.dart';
+import 'package:daniyal_designers_todo/views/all_todo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 class AddTodoScreen extends StatefulWidget {
   const AddTodoScreen({super.key});
@@ -21,7 +23,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneNumController = TextEditingController();
   final DateTime date = DateTime.now();
-
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final double deviceHeight = MediaQuery.of(context).size.height;
@@ -50,6 +52,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
               ),
               SizedBox(height: deviceHeight * 0.02),
               Form(
+                key: formKey,
                 child: Column(
                   children: [
                     Row(
@@ -123,10 +126,12 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                     TextFormField(
                       controller: nameController,
                       decoration: InputDecoration(
-                          hintText: "Enter Name",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          )),
+                        hintText: "Enter Name",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      validator: Validator.validateName,
                     ),
                     SizedBox(height: deviceHeight * 0.02),
                     TextFormField(
@@ -161,28 +166,33 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                               : 'Select Date'),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
               ElevatedButton(
                 onPressed: () {
-                  FirebaseCRUD().createUser(
-                    User(
-                        deliveryDate:
-                            DateFormat('dd-MMMM-yyyy').format(selectedDate!),
-                        phoneNumber: int.tryParse(phoneNumController.text) ?? 0,
-                        name: nameController.text,
-                        collarNumber: _currentState,
-                        waist: int.tryParse(waistController.text) ?? 0,
-                        height: int.tryParse(heightController.text) ?? 0),
-                  );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const UserScreen(),
-                    ),
-                  );
+                  if (formKey.currentState!.validate()) {
+                    FirebaseCRUD().createUser(
+                      User(
+                          id: const Uuid().v1(),
+                          deliveryDate:
+                              DateFormat('dd-MMMM-yyyy').format(selectedDate!),
+                          phoneNumber:
+                              int.tryParse(phoneNumController.text) ?? 0,
+                          name: nameController.text,
+                          collarNumber: _currentState,
+                          waist: int.tryParse(waistController.text) ?? 0,
+                          height: int.tryParse(heightController.text) ?? 0),
+                    );
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AllTodoScreen(),
+                      ),
+                      (route) => false,
+                    );
+                  }
                 },
                 child: const Text("Add User"),
               ),

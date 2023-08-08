@@ -1,5 +1,3 @@
-import 'package:uuid/uuid.dart';
-
 class User {
   final String? id;
   final String name;
@@ -18,11 +16,13 @@ class User {
     required this.waist,
     required this.height,
   });
-
+  String get userWaist => waist.toString();
+  String get userHeight => height.toString();
+  String get userPhoneNumber => phoneNumber.toString();
   Map<String, dynamic> toJson() => {
         'name': name,
         'collar_number': collarNumber,
-        'id': const Uuid().v4(),
+        'id': id,
         'waist': waist,
         'height': height,
         'phone_number': phoneNumber,

@@ -1,24 +1,15 @@
 import 'package:daniyal_designers_todo/models/todo_model.dart';
 import 'package:daniyal_designers_todo/services/firebase_crud.dart';
-import 'package:daniyal_designers_todo/views/user_screen.dart';
+import 'package:daniyal_designers_todo/views/all_todo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class UpdateTodoScreen extends StatefulWidget {
-  final String id;
-  final String name;
-  final int waist;
-  final int height;
-  final int phoneNum;
-  final String selectedDate;
+  final User user;
+
   const UpdateTodoScreen({
     super.key,
-    required this.id,
-    required this.name,
-    required this.waist,
-    required this.height,
-    required this.phoneNum,
-    required this.selectedDate,
+    required this.user,
   });
 
   @override
@@ -34,13 +25,16 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
   final TextEditingController waistController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneNumController = TextEditingController();
+  DateFormat inputFormat = DateFormat('dd-MMMM-yyyy');
   @override
   void initState() {
     super.initState();
-    nameController.text = widget.name;
-    heightController.text = widget.height.toString();
-    waistController.text = widget.waist.toString();
-    phoneNumController.text = widget.phoneNum.toString();
+    nameController.text = widget.user.name;
+    heightController.text = widget.user.userHeight;
+    waistController.text = widget.user.userWaist;
+    phoneNumController.text = widget.user.userPhoneNumber;
+    phoneNumController.text = widget.user.userPhoneNumber;
+    selectedDate = inputFormat.parse(widget.user.deliveryDate);
   }
 
   @override
@@ -121,7 +115,9 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
                                   child: Text(dropDownStringItem));
                             }).toList(),
                             onChanged: (String? newValueSelected) {
-                              _currentState = newValueSelected ?? "";
+                              setState(() {
+                                _currentState = newValueSelected!;
+                              });
                             },
                             value: _currentState,
                           ),
@@ -157,31 +153,29 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
                             final DateTime? datePicked = await showDatePicker(
                                 context: context,
                                 initialDate: DateTime.now(),
-                                firstDate: DateTime(2022),
+                                firstDate: DateTime.now(),
                                 lastDate: DateTime(2101));
-                            if (datePicked != null &&
-                                datePicked != selectedDate) {
+                            if (datePicked != null) {
                               setState(() {
                                 selectedDate = datePicked;
                               });
                             }
                           },
-                          child: const Text("Enter a date"),
-                        ),
-                        Text(
-                          selectedDate != null
-                              ? DateFormat('dd-MM-yyyy').format(selectedDate!)
-                              : 'No date selected',
+                          child: Text(selectedDate != null
+                              ? DateFormat('dd-MMMM-yyyy').format(selectedDate!)
+                              : 'Select Date'),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
               ElevatedButton(
                 onPressed: () {
+                  print(selectedDate);
                   FirebaseCRUD().updateUser(
                     User(
+                        id: widget.user.id,
                         deliveryDate:
                             DateFormat('dd-MMMM-yyyy').format(selectedDate!),
                         phoneNumber: int.tryParse(phoneNumController.text) ?? 0,
@@ -190,11 +184,12 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
                         waist: int.tryParse(waistController.text) ?? 0,
                         height: int.tryParse(heightController.text) ?? 0),
                   );
-                  Navigator.push(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const UserScreen(),
+                      builder: (context) => const AllTodoScreen(),
                     ),
+                    (route) => false,
                   );
                 },
                 child: const Text("Submit"),

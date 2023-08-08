@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daniyal_designers_todo/models/todo_model.dart';
@@ -8,6 +9,7 @@ final CollectionReference<Map<String, dynamic>> collection =
 
 class FirebaseCRUD {
   Future<void> createUser(User user) async {
+    log('User Id: ${user.id}');
     await collection.doc(user.id).set(user.toJson());
   }
 
@@ -15,8 +17,8 @@ class FirebaseCRUD {
     await collection.doc(user.id).update(user.toJson());
   }
 
-  Future<void> deleteUser(User user) async {
-    await collection.doc(user.id).delete();
+  Future<void> deleteUser(String userId) async {
+    await collection.doc(userId).delete();
   }
 
   Future<List<User>> getUser() async {
