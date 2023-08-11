@@ -1,7 +1,10 @@
 import 'package:daniyal_designers_todo/models/todo_model.dart';
 import 'package:daniyal_designers_todo/services/firebase_crud.dart';
+import 'package:daniyal_designers_todo/shared/text_styles.dart';
+import 'package:daniyal_designers_todo/utils/validataion.dart';
 import 'package:daniyal_designers_todo/views/all_todo_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class UpdateTodoScreen extends StatefulWidget {
@@ -26,6 +29,7 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneNumController = TextEditingController();
   DateFormat inputFormat = DateFormat('dd-MMMM-yyyy');
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -52,61 +56,81 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
               SizedBox(height: deviceHeight * 0.09),
               Row(
                 children: [
-                  const Text(
-                    "Afridi Designers",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-                  ),
-                  SizedBox(width: deviceWidth * 0.15),
+                  Text("Daniyal Designers",
+                      style: TextStyles.largeHeadingStyles),
+                  SizedBox(width: deviceWidth * 0.2),
                   Text(
-                    'Date: ${DateFormat('dd-MMMM-yyyy').format(date)}',
+                    'Date: ${DateFormat('dd-MM-yy').format(date)}',
                   ),
                 ],
               ),
-              SizedBox(height: deviceHeight * 0.02),
+              const Divider(),
+              SizedBox(height: deviceHeight * 0.05),
               Form(
+                key: formKey,
                 child: Column(
                   children: [
                     Row(
                       children: [
-                        const Text("Your Height:"),
-                        SizedBox(width: deviceWidth * 0.07),
-                        TextFormField(
-                          controller: heightController,
-                          maxLength: 3,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            constraints:
-                                BoxConstraints(maxWidth: deviceWidth * 0.3),
-                            hintText: "Enter Hight",
-                            hintStyle: const TextStyle(fontSize: 12),
-                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text("Your Height:"),
+                            SizedBox(height: deviceHeight * 0.01),
+                            TextFormField(
+                              controller: heightController,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(3),
+                              ],
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
+                                isDense: true,
+                                constraints:
+                                    BoxConstraints(maxWidth: deviceWidth * 0.4),
+                                hintText: "Enter Hight",
+                                hintStyle: const TextStyle(fontSize: 12),
+                              ),
+                              validator: Validator.validateHeight,
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: deviceWidth * 0.09),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text("Your waist:"),
+                            SizedBox(height: deviceHeight * 0.01),
+                            TextFormField(
+                              controller: waistController,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(3),
+                              ],
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
+                                isDense: true,
+                                constraints:
+                                    BoxConstraints(maxWidth: deviceWidth * 0.4),
+                                hintText: "Enter waist",
+                                hintStyle: const TextStyle(fontSize: 12),
+                              ),
+                              validator: Validator.validateWaist,
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    Row(
-                      children: [
-                        const Text("Your waist:"),
-                        SizedBox(width: deviceWidth * 0.10),
-                        TextFormField(
-                          controller: waistController,
-                          maxLength: 3,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            constraints:
-                                BoxConstraints(maxWidth: deviceWidth * 0.3),
-                            hintText: "Enter waist",
-                            hintStyle: const TextStyle(fontSize: 12),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: deviceHeight * 0.02),
-                    Row(
+                    SizedBox(height: deviceHeight * 0.05),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const Text("Your Collar Number:"),
-                        SizedBox(width: deviceWidth * 0.1),
+                        SizedBox(height: deviceHeight * 0.01),
                         SizedBox(
-                          width: deviceWidth * 0.3,
+                          width: deviceWidth * 0.2,
                           height: deviceHeight * 0.08,
                           child: DropdownButton<String>(
                             items: collarNum.map((String dropDownStringItem) {
@@ -125,72 +149,92 @@ class _UpdateTodoState extends State<UpdateTodoScreen> {
                       ],
                     ),
                     SizedBox(height: deviceHeight * 0.05),
-                    TextFormField(
-                      controller: nameController,
-                      decoration: InputDecoration(
-                          hintText: "Enter Name",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          )),
-                    ),
-                    SizedBox(height: deviceHeight * 0.02),
-                    TextFormField(
-                      controller: phoneNumController,
-                      maxLength: 11,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        hintText: "Enter Phone Number",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    Row(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Text("Delivery Date:"),
-                        TextButton(
-                          onPressed: () async {
-                            final DateTime? datePicked = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime.now(),
-                                lastDate: DateTime(2101));
-                            if (datePicked != null) {
-                              setState(() {
-                                selectedDate = datePicked;
-                              });
-                            }
-                          },
-                          child: Text(selectedDate != null
-                              ? DateFormat('dd-MMMM-yyyy').format(selectedDate!)
-                              : 'Select Date'),
+                        const Text("Your Name"),
+                        SizedBox(height: deviceHeight * 0.01),
+                        TextFormField(
+                          controller: nameController,
+                          decoration: const InputDecoration(
+                            hintText: "Enter Name",
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: Validator.validateName,
+                        ),
+                        SizedBox(height: deviceHeight * 0.02),
+                        const Text("your Number"),
+                        SizedBox(height: deviceHeight * 0.01),
+                        TextFormField(
+                          controller: phoneNumController,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(11),
+                          ],
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Enter Phone Number",
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: Validator.validatePhoneNumber,
                         ),
                       ],
+                    ),
+                    SizedBox(height: deviceHeight * 0.01),
+                    Card(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(width: deviceWidth * 0.09),
+                          const Text("Delivery Date:"),
+                          TextButton(
+                            onPressed: () async {
+                              final DateTime? datePicked = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime.now(),
+                                  lastDate: DateTime(2101));
+                              if (datePicked != null) {
+                                setState(() {
+                                  selectedDate = datePicked;
+                                });
+                              }
+                            },
+                            child: Text(selectedDate != null
+                                ? DateFormat('dd-MMMM-yyyy')
+                                    .format(selectedDate!)
+                                : 'Select Date'),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
+              SizedBox(height: deviceHeight * 0.01),
               ElevatedButton(
                 onPressed: () {
-                  print(selectedDate);
-                  FirebaseCRUD().updateUser(
-                    User(
-                        id: widget.user.id,
-                        deliveryDate:
-                            DateFormat('dd-MMMM-yyyy').format(selectedDate!),
-                        phoneNumber: int.tryParse(phoneNumController.text) ?? 0,
-                        name: nameController.text,
-                        collarNumber: _currentState,
-                        waist: int.tryParse(waistController.text) ?? 0,
-                        height: int.tryParse(heightController.text) ?? 0),
-                  );
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AllTodoScreen(),
-                    ),
-                    (route) => false,
-                  );
+                  if (formKey.currentState!.validate()) {
+                    FirebaseCRUD().updateUser(
+                      User(
+                          id: widget.user.id,
+                          deliveryDate:
+                              DateFormat('dd-MMMM-yyyy').format(selectedDate!),
+                          phoneNumber:
+                              int.tryParse(phoneNumController.text) ?? 0,
+                          name: nameController.text,
+                          collarNumber: _currentState,
+                          waist: int.tryParse(waistController.text) ?? 0,
+                          height: int.tryParse(heightController.text) ?? 0),
+                    );
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AllTodoScreen(),
+                      ),
+                      (route) => false,
+                    );
+                  }
                 },
                 child: const Text("Submit"),
               ),

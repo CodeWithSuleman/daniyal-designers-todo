@@ -36,36 +36,46 @@ class _AllTodoScreenState extends State<AllTodoScreen> {
                 itemBuilder: (context, index) {
                   final data = snapshot.data![index];
                   return Card(
-                    color: Colors.lime.shade50,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        UserDetailsCard(user: data),
-                        Row(
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                FirebaseCRUD().deleteUser(data.id!);
-                                setState(() {});
-                              },
-                              child: const Text("Delete"),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return UpdateTodoScreen(
-                                        user: snapshot.data![index],
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                              child: const Text("Update"),
-                            ),
-                          ],
+                        // UserDetailsCard(user: data),
+                        ListTile(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (ctx) => UserDetailsBox(user: data),
+                            );
+                          },
+                          title: Text("Name: ${data.name}"),
+                          subtitle: Text("Phone Number: ${data.phoneNumber}"),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return UpdateTodoScreen(
+                                          user: snapshot.data![index],
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.edit),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  FirebaseCRUD().deleteUser(data.id!);
+                                  setState(() {});
+                                },
+                                icon: const Icon(Icons.delete),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),

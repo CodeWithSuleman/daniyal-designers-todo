@@ -1,30 +1,42 @@
 import 'package:daniyal_designers_todo/models/todo_model.dart';
+import 'package:daniyal_designers_todo/shared/text_styles.dart';
+
 import 'package:flutter/material.dart';
 
-class UserDetailsCard extends StatelessWidget {
+class UserDetailsBox extends StatelessWidget {
   final User user;
 
-  const UserDetailsCard({
+  const UserDetailsBox({
     Key? key,
     required this.user,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    final double deviceHeight = MediaQuery.of(context).size.height;
+    return AlertDialog(
+      titleTextStyle: const TextStyle(fontSize: 15, color: Colors.black),
+      title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Name: ${user.name}"),
-          Text("PhoneNumber: ${user.phoneNumber}"),
-          Text("waist: ${user.waist}"),
+          Text(
+            "Details",
+            style: TextStyles.largeHeadingStyles,
+          ),
+          SizedBox(height: deviceHeight * 0.02),
           Text("Height: ${user.height}"),
-          Text("CollarNumber: ${user.collarNumber}"),
+          Text("Waist: ${user.userWaist}"),
+          Text("Collar Number: ${user.collarNumber}"),
           Text("Delivery Date: ${user.deliveryDate}"),
         ],
       ),
+      actions: [
+        TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("Ok"))
+      ],
     );
   }
 }
