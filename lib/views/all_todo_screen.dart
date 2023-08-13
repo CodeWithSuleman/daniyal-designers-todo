@@ -30,6 +30,9 @@ class _AllTodoScreenState extends State<AllTodoScreen> {
         child: FutureBuilder(
           future: FirebaseCRUD().getUser(),
           builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Text("Something went wrong");
+            }
             if (snapshot.hasData) {
               return ListView.builder(
                 itemCount: snapshot.data!.length,
@@ -39,7 +42,6 @@ class _AllTodoScreenState extends State<AllTodoScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // UserDetailsCard(user: data),
                         ListTile(
                           onTap: () {
                             showDialog(
@@ -83,7 +85,9 @@ class _AllTodoScreenState extends State<AllTodoScreen> {
                 },
               );
             } else {
-              return const Text("Data Not Found");
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             }
           },
         ),
