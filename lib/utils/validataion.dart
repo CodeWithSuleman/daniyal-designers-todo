@@ -26,4 +26,10 @@ class Validator {
     }
     return null;
   }
+  static String? validateDate(String? value) {
+    if (value!.isEmpty) {
+      return 'Please enter Delivery Date';
+    }
+    return null;
+  }
 }
