@@ -49,8 +49,8 @@ class _AllTodoScreenState extends State<AllTodoScreen> {
                               builder: (ctx) => UserDetailsBox(user: data),
                             );
                           },
-                          title: Text("Name: ${data.name}"),
-                          subtitle: Text("Phone Number: ${data.phoneNumber}"),
+                          title: Text(data.name),
+                          subtitle: Text(data.userPhoneNumber),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [

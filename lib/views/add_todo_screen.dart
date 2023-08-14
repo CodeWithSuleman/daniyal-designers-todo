@@ -113,7 +113,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                     ),
                     SizedBox(height: deviceHeight * 0.05),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text("Collar Number"),
                         SizedBox(height: deviceHeight * 0.01),
@@ -138,7 +138,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                     ),
                     SizedBox(height: deviceHeight * 0.02),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text("Your Name"),
                         SizedBox(height: deviceHeight * 0.01),
@@ -153,7 +153,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                           validator: Validator.validateName,
                         ),
                         SizedBox(height: deviceHeight * 0.02),
-                        const Text("your Number"),
+                        const Text("Your Number"),
                         SizedBox(height: deviceHeight * 0.01),
                         TextFormField(
                           controller: phoneNumController,
@@ -174,18 +174,19 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                     ),
                     SizedBox(height: deviceHeight * 0.01),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(width: deviceWidth * 0.09),
-                        const Text("Delivery Date:"),
+                        const Text("Delivery Date"),
                         TextFormField(
                           validator: Validator.validateDate,
                           controller: dateController,
                           readOnly: true,
                           decoration: InputDecoration(
-                            hintText: selectedDate != null
-                                ? DateFormat('dd-MMMM-yyyy')
-                                    .format(selectedDate!)
-                                : 'Select Date',
+                            hintText: "Select Date",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                           onTap: () async {
                             final DateTime? datePicked = await showDatePicker(
@@ -195,10 +196,11 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                                 lastDate: DateTime(2101));
                             if (datePicked != null) {
                               setState(() {
+                                dateController.text = DateFormat('dd-MMMM-yyyy')
+                                    .format(datePicked);
                                 selectedDate = datePicked;
                               });
                             }
-                            dateController.text;
                           },
                         ),
                       ],
