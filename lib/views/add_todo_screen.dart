@@ -23,6 +23,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
   final TextEditingController waistController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneNumController = TextEditingController();
+  final TextEditingController dateController = TextEditingController();
   final DateTime date = DateTime.now();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
@@ -172,32 +173,35 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                       ],
                     ),
                     SizedBox(height: deviceHeight * 0.01),
-                    Card(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(width: deviceWidth * 0.09),
-                          const Text("Delivery Date:"),
-                          TextButton(
-                            onPressed: () async {
-                              final DateTime? datePicked = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime.now(),
-                                  lastDate: DateTime(2101));
-                              if (datePicked != null) {
-                                setState(() {
-                                  selectedDate = datePicked;
-                                });
-                              }
-                            },
-                            child: Text(selectedDate != null
+                    Column(
+                      children: [
+                        SizedBox(width: deviceWidth * 0.09),
+                        const Text("Delivery Date:"),
+                        TextFormField(
+                          validator: Validator.validateDate,
+                          controller: dateController,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            hintText: selectedDate != null
                                 ? DateFormat('dd-MMMM-yyyy')
                                     .format(selectedDate!)
-                                : 'Select Date'),
+                                : 'Select Date',
                           ),
-                        ],
-                      ),
+                          onTap: () async {
+                            final DateTime? datePicked = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime(2101));
+                            if (datePicked != null) {
+                              setState(() {
+                                selectedDate = datePicked;
+                              });
+                            }
+                            dateController.text;
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),
